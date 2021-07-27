@@ -35,6 +35,7 @@ public class Commands extends ListenerAdapter {
 	HashMap<String, String> customTriggers = fileHashReader("ctriggers");
 	String urlName = fileStringReader("url");
 	String websiteDir = fileStringReader("websitedir");
+	HashMap<String, String> undoPath = new HashMap<String, String>();
 
 	public HashMap<String, String> fileHashReader(String s) {
 		try {
@@ -209,8 +210,7 @@ public class Commands extends ListenerAdapter {
 				}
 			}
 			e.getMessage().reply(eb.build()).queue();
-		}
-		if (args[0].equalsIgnoreCase(Main.prefix + "yoink")) {
+		} else if (args[0].equalsIgnoreCase(Main.prefix + "yoink")) {
 			if (args.length != 2) {
 				e.getMessage().reply("Usage: !yoink @<user>").queue();
 				return;
@@ -230,14 +230,12 @@ public class Commands extends ListenerAdapter {
 				d.sendMessage("You have been yoinked by " + e.getAuthor().getName()).queue();
 			});
 			e.getMessage().reply("You have yoinked " + e.getMessage().getMentionedUsers().get(0).getName()).queue();
-		}
-		if (args[0].equalsIgnoreCase(Main.prefix + "ping")) {
+		} else if (args[0].equalsIgnoreCase(Main.prefix + "ping")) {
 			long t = System.currentTimeMillis();
 			e.getMessage().reply("Pong!").queue(m -> {
 				m.editMessage("Ping: " + String.valueOf(System.currentTimeMillis() - t) + "ms").queue();
 			});
-		}
-		if (args[0].equalsIgnoreCase(Main.prefix + "toggle")) {
+		} else if (args[0].equalsIgnoreCase(Main.prefix + "toggle")) {
 			if (args.length != 2 || (!args[1].equalsIgnoreCase("easyrun") && !args[1].equalsIgnoreCase("legrun"))) {
 				e.getMessage().reply("Usage: !toggle [EasyRun/LegRun]").queue();
 				return;
@@ -267,13 +265,12 @@ public class Commands extends ListenerAdapter {
 					e.getMessage().reply("Toggled legendary runs on").queue();
 				}
 			}
-		}
-		if (args[0].equalsIgnoreCase(Main.prefix + "addpage")) {
+		} else if (args[0].equalsIgnoreCase(Main.prefix + "addpage")) {
 			try {
 				if (args.length == 1) {
 					e.getMessage().reply("Usage: !addpage type:(text/redirect/file) pagelink:(what will be after "
 							+ urlName
-							+ "/) [title:(page title)] [css:(css;links;seperated;by;semicolons)] [text:\"text on page in quotation marks\"] [link:(redirect link)]\nIf you choose the type to be text, it'll be plain text on the website, you may include html such as <a> tags and you can also link external css pages. Keep in mind that whatever you type will be surrounded with <p> tags. With redirect, its just a page that'll redirect to your specified link. With file, you need to upload the file of your choice. This can be an html (if it is make sure to have it be index.html), or any file really. Think that should be all you need to know, don't abuse and yea have fun ig :)")
+							+ "/) [title:\"page title in quotation marks\"] [css:(css;links;seperated;by;semicolons)] [text:\"text on page in quotation marks\"] [link:(redirect link)]\nIf you choose the type to be text, it'll be plain text on the website, you may include html such as <a> tags and you can also link external css pages. Keep in mind that whatever you type will be surrounded with <p> tags. With redirect, its just a page that'll redirect to your specified link. With file, you need to upload the file of your choice. This can be an html (if it is make sure to have it be index.html), or any file really. Think that should be all you need to know, don't abuse and yea have fun ig :)")
 							.queue();
 					return;
 				}
@@ -286,12 +283,12 @@ public class Commands extends ListenerAdapter {
 				HashSet<Integer> ignore = new HashSet<Integer>();
 				for (int i = 0; i < args.length; i++) {
 					String s = args[i];
-					if (ignore.contains(i))
-						continue;
-					if (s.equalsIgnoreCase(Main.prefix + "addpage"))
+					if (ignore.contains(i) || s.equalsIgnoreCase(Main.prefix + "addpage"))
 						continue;
 					if (s.toLowerCase().startsWith("type:")) {
 						if (s.length() < 6) {
+							if (s.length() > 1956)
+								s = s.substring(0, 1955);
 							e.getMessage().reply("Error at " + s + " <----, Will still try and proceed.").queue();
 							continue;
 						}
@@ -299,17 +296,19 @@ public class Commands extends ListenerAdapter {
 						if (ss.equals("text") || ss.equals("redirect") || ss.equals("file"))
 							type = ss;
 						continue;
-					}
-					if (s.toLowerCase().startsWith("pagelink:")) {
+					} else if (s.toLowerCase().startsWith("pagelink:")) {
 						if (s.length() < 10) {
+							if (s.length() > 1956)
+								s = s.substring(0, 1955);
 							e.getMessage().reply("Error at " + s + " <----, Will still try and proceed.").queue();
 							continue;
 						}
 						pageLink = s.substring(9);
 						continue;
-					}
-					if (s.toLowerCase().startsWith("text:\"")) {
+					} else if (s.toLowerCase().startsWith("text:\"")) {
 						if (s.length() < 7) {
+							if (s.length() > 1956)
+								s = s.substring(0, 1955);
 							e.getMessage().reply("Error at " + s + " <----, Will still try and proceed.").queue();
 							continue;
 						}
@@ -322,17 +321,19 @@ public class Commands extends ListenerAdapter {
 						}
 						text = ss.substring(0, ss.length() - 1);
 						continue;
-					}
-					if (s.toLowerCase().startsWith("link:")) {
+					} else if (s.toLowerCase().startsWith("link:")) {
 						if (s.length() < 6) {
+							if (s.length() > 1956)
+								s = s.substring(0, 1955);
 							e.getMessage().reply("Error at " + s + " <----, Will still try and proceed.").queue();
 							continue;
 						}
 						link = s.substring(5);
 						continue;
-					}
-					if (s.toLowerCase().startsWith("title:\"")) {
+					} else if (s.toLowerCase().startsWith("title:\"")) {
 						if (s.length() < 8) {
+							if (s.length() > 1956)
+								s = s.substring(0, 1955);
 							e.getMessage().reply("Error at " + s + " <----, Will still try and proceed.").queue();
 							continue;
 						}
@@ -345,9 +346,10 @@ public class Commands extends ListenerAdapter {
 						}
 						title = ss.substring(0, ss.length() - 1);
 						continue;
-					}
-					if (s.toLowerCase().startsWith("css:")) {
+					} else if (s.toLowerCase().startsWith("css:")) {
 						if (s.length() < 5) {
+							if (s.length() > 1956)
+								s = s.substring(0, 1955);
 							e.getMessage().reply("Error at " + s + " <----, Will still try and proceed.").queue();
 							continue;
 						}
@@ -358,6 +360,8 @@ public class Commands extends ListenerAdapter {
 						}
 						continue;
 					}
+					if (s.length() > 1956)
+						s = s.substring(0, 1955);
 					e.getMessage().reply("Error at " + s + " <----, Will still try and proceed.").queue();
 				}
 				if (type == null) {
@@ -407,6 +411,7 @@ public class Commands extends ListenerAdapter {
 						FileWriter writer = new FileWriter(f);
 						writer.write(page);
 						writer.close();
+						undoPath.put(e.getAuthor().getId(), f.toString());
 						e.getMessage()
 								.reply("Made the page successfully! Check page at https://" + urlName + "/" + pageLink)
 								.queue();
@@ -438,6 +443,7 @@ public class Commands extends ListenerAdapter {
 						FileWriter writer = new FileWriter(f);
 						writer.write(page);
 						writer.close();
+						undoPath.put(e.getAuthor().getId(), f.toString());
 						e.getMessage().reply(
 								"Made the page successfully! Check page out at https://" + urlName + "/" + pageLink)
 								.queue();
@@ -466,6 +472,7 @@ public class Commands extends ListenerAdapter {
 					f = new File(f, e.getMessage().getAttachments().get(0).getFileName());
 					if (!f.exists()) {
 						e.getMessage().getAttachments().get(0).downloadToFile(f);
+						undoPath.put(e.getAuthor().getId(), f.toString());
 						e.getMessage().reply("File made successfully! Check out at https://" + urlName + "/" + pageLink
 								+ "/" + e.getMessage().getAttachments().get(0).getFileName()).queue();
 					} else {
@@ -477,6 +484,17 @@ public class Commands extends ListenerAdapter {
 			} catch (Exception ex) {
 				ex.printStackTrace();
 				e.getMessage().reply("Error occured, bug ramiro to fix this and uh yea we gud").queue();
+			}
+		} else if (args[0].equalsIgnoreCase(Main.prefix + "undopage")) {
+			if (!undoPath.containsKey(e.getAuthor().getId()))
+				e.getMessage().reply("You can't undo anything!").queue();
+			else {
+				File f = new File(undoPath.get(e.getAuthor().getId()));
+				if (f.delete()) {
+					e.getMessage().reply("Successfully deleted!").queue();
+					undoPath.remove(e.getAuthor().getId());
+				} else
+					e.getMessage().reply("Something went wrong!").queue();
 			}
 		}
 	}
