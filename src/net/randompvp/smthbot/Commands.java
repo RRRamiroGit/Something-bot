@@ -97,8 +97,8 @@ public class Commands extends ListenerAdapter {
 		if (args[0].equalsIgnoreCase(Main.prefix + "addcommand")) {
 			if (args.length == 1) {
 				e.getMessage().reply("Usage: ```!addcommand <command> <response>```").queue();
-			} else if (e.getMessage().getContentRaw().contains(",") || e.getMessage().getContentRaw().contains("=")) {
-				e.getMessage().reply("Sorry, commands may not contain equal signs or commas.").queue();
+			} else if (e.getMessage().getContentRaw().contains("*") || e.getMessage().getContentRaw().contains("=")) {
+				e.getMessage().reply("Sorry, commands may not contain equal signs or asterisks.").queue();
 			} else if (args.length == 2) {
 				e.getMessage().reply("Usage: ```!addcommand " + args[1] + " <response>```").queue();
 			} else if (args.length >= 3) {
@@ -199,15 +199,13 @@ public class Commands extends ListenerAdapter {
 				try {
 					String randomMissions = "";
 					int ef = Integer.parseInt(args[1]);
-					if (ef > 20) {
-						e.getMessage().reply("Yea no less than 20 pls").queue();
-					}
-					for (int i = 0; i < ef; i++) {
+					if (ef > 20)
+						ef = 20;
+					for (int i = 0; i < ef; i++)
 						randomMissions = randomMissions + "\n" + randomMission();
-					}
 					eb.setDescription(randomMissions);
-				} catch (Exception ex) {
-					e.getMessage().reply("lol y").queue();
+				} catch (NumberFormatException ex) {
+					eb.setDescription(randomMission());
 				}
 			}
 			e.getMessage().reply(eb.build()).queue();
