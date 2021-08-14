@@ -51,10 +51,16 @@ public class UserUpdateActivity extends ListenerAdapter {
 				} else if (e.getMember().getActivities().get(1).getType().equals(ActivityType.LISTENING)) {
 					s = " is now listening to";
 					emoji = ":musical_note:";
+				} else if (e.getMember().getActivities().get(1).getType().equals(ActivityType.STREAMING)) {
+					s = " is now streaming to";
+					emoji = ":purple_circle:";
 				}
 			} else if (e.getMember().getActivities().get(0).getType().equals(ActivityType.LISTENING)) {
 				s = " is now listening to";
 				emoji = ":musical_note:";
+			} else if (e.getMember().getActivities().get(0).getType().equals(ActivityType.STREAMING)) {
+				s = " is now streaming to";
+				emoji = ":purple_circle:";
 			}
 			e.getGuild().getTextChannelById(channelId).sendMessage(emoji + " " + e.getMember().getUser().getName() + s
 					+ " " + e.getMember().getActivities().get(num).getName()).queue();
